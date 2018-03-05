@@ -27,6 +27,26 @@ class Kele
       print @mentor_availability
    end
    
+   def get_messages(arg = nil)
+      if arg == nil
+        response = self.class.get(url("message_threads"), headers: {"authorization" => @auth_token})
+      else
+        response = self.class.get(url("message_threads?page=#{arg}"), headers: {"authorization" => @auth_token})
+      end
+      @messages = JSON.parse(response.body)
+   end
+   
+    def create_message(sender_email, recipient_id, thread_token, subject, message)
+        response = self.class.post(url("messages"), 
+            body: {
+                sender: sender_email,
+                recipient_id: recipient_id,
+                token: thread_token,
+                subject: subject,
+                "stripped-text": message},
+            headers: {"authorization" => @auth_token})
+    end
+   
    private
   
    def url(endpoint)
