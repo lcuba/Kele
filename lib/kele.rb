@@ -2,12 +2,14 @@ require 'httparty'
 require 'json'
 require 'lib/roadmap.rb'
 require 'lib/messaging.rb'
+require 'lib/submissions.rb'
 
 class Kele
     include HTTParty
     include JSON
     include Roadmap
     include Messaging
+    include Submissions
    
    
    def initialize(email, password)
@@ -21,6 +23,7 @@ class Kele
    def get_me
        response = self.class.get(url("users/me"), headers: {"authorization" => @auth_token})
        @user = JSON.parse(response.body)
+       @enrollment_id = @user["current_enrollment"]["id"]
    end
    
    def get_mentor_availability(mentor_id)
